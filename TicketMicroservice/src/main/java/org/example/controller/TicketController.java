@@ -1,6 +1,6 @@
 package org.example.controller;
 
-import org.example.model.ticket;
+import org.example.model.Ticket;
 import org.example.service.TicketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,8 +17,8 @@ public class TicketController {
     private TicketService ticketService;
 
     @PostMapping("/book")
-    public ResponseEntity<ticket> bookTicket(@RequestBody ticket ticket) {
-        ticket bookedTicket = ticketService.bookTicket(ticket);
+    public ResponseEntity<Ticket> bookTicket(@RequestBody Ticket ticket) {
+        Ticket bookedTicket = ticketService.bookTicket(ticket);
         return new ResponseEntity<>(bookedTicket, HttpStatus.CREATED);
     }
 
@@ -29,8 +29,8 @@ public class TicketController {
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<ticket>> getTicketsByUserId(@PathVariable Long userId) {
-        List<ticket> tickets = ticketService.getTicketsByUserId(userId);
+    public ResponseEntity<List<Ticket>> getTicketsByUserId(@PathVariable Long userId) {
+        List<Ticket> tickets = ticketService.getTicketsByUserId(userId);
         return new ResponseEntity<>(tickets, HttpStatus.OK);
     }
 }

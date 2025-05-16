@@ -6,9 +6,17 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
-public class ticket {
+@Builder
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class Ticket {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,7 +25,6 @@ public class ticket {
     @NotNull
     private long ticketNumber;
 
-    @Id
     @NotNull
     private long flightId;
 

@@ -24,4 +24,17 @@ public class FlightService {
     public void deleteFlight(Long flightId) {
         flightRepository.deleteById(flightId);
     }
+
+    public Flight updateAvailableSeats(Long id, int seatsToBook) {
+        Flight flight = flightRepository.getFlightById(id);
+        if (flight != null && flight.getAvailableSeats() >= seatsToBook) {
+            flight.setAvailableSeats(flight.getAvailableSeats() - seatsToBook);
+            return flightRepository.save(flight);
+        }
+        return null;
+    }
+
+    public Flight getFlightById(long flightId) {
+        return flightRepository.getFlightById(flightId);
+    }
 }

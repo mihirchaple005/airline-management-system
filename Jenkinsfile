@@ -9,31 +9,25 @@ pipeline {
             }
         }
 
-        stage('List Workspace') {
-    steps {
-        bat 'dir /s /b'
-    }
-}
-
         stage('Build Microservices') {
             parallel {
                 stage('Build Flight Service') {
                     steps {
-                        dir('flight-service') {
+                        dir('FlightMicroservice') {  // Changed from flight-service
                             bat 'mvn clean package -DskipTests'
                         }
                     }
                 }
                 stage('Build Ticket Service') {
                     steps {
-                        dir('ticket-service') {
+                        dir('TicketMicroservice') {  // Changed from ticket-service
                             bat 'mvn clean package -DskipTests'
                         }
                     }
                 }
                 stage('Build User Service') {
                     steps {
-                        dir('user-service') {
+                        dir('UserMicroservice') {  // Changed from user-service
                             bat 'mvn clean package -DskipTests'
                         }
                     }

@@ -64,7 +64,7 @@ pipeline {
                 credentialsId: 'ec2-honors',  
                 keyFileVariable: 'SSH_KEY'     // Temp file path for key
             )]) {
-                sh """
+                bat """
                     scp -o StrictHostKeyChecking=no -i $SSH_KEY docker-compose.yml ec2-user@${EC2_IP}:~/  
                     ssh -o StrictHostKeyChecking=no -i $SSH_KEY ec2-user@${EC2_IP} "docker-compose up -d"
                 """

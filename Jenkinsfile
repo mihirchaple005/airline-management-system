@@ -55,6 +55,24 @@ pipeline {
         }
     }
 }
+
+        stage('Deploy to EC2') {
+    steps {
+        script {
+            def EC2_IP = '13.232.45.48' // elastic ip
+            withCredentials([sshUserPrivateKey(
+                credentialsId: 'ec2-honors',  
+                keyFileVariable: 'SSH_KEY'     // Temp file path for key
+            )]) {
+                sh """
+                    scp -o StrictHostKeyChecking=no -i $SSH_KEY docker-compose.yml ec2-user@${EC2_IP}:~/  
+                    ssh -o StrictHostKeyChecking=no -i $SSH_KEY ec2-user@${EC2_IP} "docker-compose up -d"
+                """
+            }
+        }
+    }
+}
+
     }
 
     post {

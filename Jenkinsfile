@@ -1,11 +1,15 @@
 pipeline {
     agent any
 
+    environment {
+        EC2_IP = '13.232.45.48'
+    }
+
     stages {
         stage('Checkout Code') {
             steps {
                 git branch: 'main', 
-                url: 'https://github.com/mihirchaple005/airline-management-system.git'
+                    url: 'https://github.com/mihirchaple005/airline-management-system.git'
             }
         }
 
@@ -13,21 +17,21 @@ pipeline {
             parallel {
                 stage('Build Flight Service') {
                     steps {
-                        dir('FlightMicroservice') {  // Changed from flight-service
+                        dir('FlightMicroservice') {
                             bat 'mvn clean package -DskipTests'
                         }
                     }
                 }
                 stage('Build Ticket Service') {
                     steps {
-                        dir('TicketMicroservice') {  // Changed from ticket-service
+                        dir('TicketMicroservice') {
                             bat 'mvn clean package -DskipTests'
                         }
                     }
                 }
                 stage('Build User Service') {
                     steps {
-                        dir('UserMicroservice') {  // Changed from user-service
+                        dir('UserMicroservice') {
                             bat 'mvn clean package -DskipTests'
                         }
                     }
@@ -37,42 +41,37 @@ pipeline {
 
         stage('Build Docker Images') {
             steps {
+                bat 'docker-compose build'
+            }
+        }
+
+        stage('Deploy Locally') {
+            steps {
                 script {
-                    bat 'docker-compose build'
+                    try {
+                        bat 'docker-compose up -d'
+                    } catch (err) {
+                        echo "Local deployment failed: ${err}"
+                    }
                 }
             }
         }
 
-        stage('Deploy') {
-    steps {
-        script {
-            try {
-                sh 'docker-compose up -d'
-            } catch (err) {
-                echo "Deployment failed: ${err}"
-                // Optional: currentBuild.result = 'UNSTABLE'
-            }
-        }
-    }
-}
-
         stage('Deploy to EC2') {
-    steps {
-        script {
-            def EC2_IP = '13.232.45.48' // elastic ip
-            withCredentials([sshUserPrivateKey(
-                credentialsId: 'ec2-honors',  
-                keyFileVariable: 'SSH_KEY'     // Temp file path for key
-            )]) {
-                bat """
-                    scp -o StrictHostKeyChecking=no -i $SSH_KEY docker-compose.yml ec2-user@${EC2_IP}:~/  
-                    ssh -o StrictHostKeyChecking=no -i $SSH_KEY ec2-user@${EC2_IP} "docker-compose up -d"
-                """
+            steps {
+                script {
+                    withCredentials([sshUserPrivateKey(
+                        credentialsId: 'ec2-honors',
+                        keyFileVariable: 'SSH_KEY'
+                    )]) {
+                        bat """
+                            scp -o StrictHostKeyChecking=no -i %%SSH_KEY%% docker-compose.yml ec2-user@${env.EC2_IP}:~/
+                            ssh -o StrictHostKeyChecking=no -i %%SSH_KEY%% ec2-user@${env.EC2_IP} "docker-compose up -d"
+                        """
+                    }
+                }
             }
         }
-    }
-}
-
     }
 
     post {

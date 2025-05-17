@@ -5,7 +5,7 @@ pipeline {
         IMAGE_NAME = "airline-app"
         DOCKER_REGISTRY = "mihirchaple"
         EC2_IP = "3.7.213.139"
-        SSH_KEY = credentials('-----BEGIN RSA PRIVATE KEY-----
+        SSH_KEY = credentials('
 MIIEpQIBAAKCAQEA38LSRmBV93mlZgAv9CByJPoa9DKt36AxRhRuNCtKyDO+h0SA
 NSQ6BtwFe/9dMahN5gUFqCAjD+9cxFFP0nyF3/qQ7WIvKID6mPrhjNfLwrp55JWe
 4Z1RvHan/LP3S6QBFLrgfAs6ULDBZCCbPoE+DzV6TagnMnDtfLpDITt/mHFgFoRl
@@ -31,7 +31,7 @@ NAYOLLDmXnwJXnNpfnFQKQeGF+mXklxxyVL81QvO0C8vRF3PUsWJcPkLcN72xqog
 Cn5K91ECgYEAxGFBMoNMdqRZuIUvmK5XF4AY1EKpu+trb/S8KE/OM2lKdg9/jjll
 YXVvHzTvcIcUVW6P95aHhNSM+ruGVRD1nJbXuDfTQAfARPvQRWME2li48w2FoLmr
 vLKC3hUZg7i3zbQy1tlmO+FJ9QAfaV0yPhgXL+pRNxTFI9DpmcE23mQ=
------END RSA PRIVATE KEY-----')  // Jenkins credentials ID
+')  // Jenkins credentials ID
     }
 
     triggers {

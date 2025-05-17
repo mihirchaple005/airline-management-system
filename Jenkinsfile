@@ -2,7 +2,6 @@ pipeline {
     agent any
 
     stages {
-        // Stage 1: Clone the GitHub repo
         stage('Checkout Code') {
             steps {
                 git branch: 'main', 
@@ -10,25 +9,33 @@ pipeline {
             }
         }
 
-        // Stage 2: Build all microservices
         stage('Build Microservices') {
             steps {
-                sh 'mvn clean package -DskipTests'  // Build all services
+                bat 'mvn clean package -DskipTests'  // Use bat instead of sh for Windows
             }
         }
 
-        // Stage 3: Build Docker images
         stage('Build Docker Images') {
             steps {
-                sh 'docker-compose build'
+                script {
+                    // Login to Docker (if pushing to Docker Hub)
+                    bat 'docker login -u YOUR_DOCKER_USER -p YOUR_DOCKER_PASSWORD'
+                    
+                    // Build images
+                    bat 'docker-compose build'
+                }
             }
         }
 
-        // Stage 4: Deploy using Docker Compose
         stage('Deploy') {
             steps {
-                sh 'docker-compose down || true'  // Stop old containers
-                sh 'docker-compose up -d'        // Start new containers
+                script {
+                    // Stop and remove existing containers
+                    bat 'docker-compose down || exit 0'  // Continue even if no containers exist
+                    
+                    // Start new containers
+                    bat 'docker-compose up -d'
+                }
             }
         }
     }

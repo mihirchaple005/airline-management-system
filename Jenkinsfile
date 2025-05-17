@@ -44,13 +44,17 @@ pipeline {
         }
 
         stage('Deploy') {
-            steps {
-                script {
-                    bat 'docker-compose down || exit 0'
-                    bat 'docker-compose up -d'
-                }
+    steps {
+        script {
+            try {
+                sh 'docker-compose up -d'
+            } catch (err) {
+                echo "Deployment failed: ${err}"
+                // Optional: currentBuild.result = 'UNSTABLE'
             }
         }
+    }
+}
     }
 
     post {

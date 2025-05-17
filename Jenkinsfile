@@ -45,17 +45,17 @@ pipeline {
             }
         }
 
-        // stage('Deploy Locally') {
-        //     steps {
-        //         script {
-        //             try {
-        //                 bat 'docker-compose up -d'
-        //             } catch (err) {
-        //                 echo "Local deployment failed: ${err}"
-        //             }
-        //         }
-        //     }
-        // }
+        stage('Deploy Locally') {
+            steps {
+                script {
+                    try {
+                        bat 'docker-compose up -d'
+                    } catch (err) {
+                        echo "Local deployment failed: ${err}"
+                    }
+                }
+            }
+        }
 
         stage('Deploy to EC2') {
             steps {
@@ -65,12 +65,11 @@ pipeline {
                         keyFileVariable: 'SSH_KEY'
                     )]) {
                         bat """
-    echo SSH key path is: %%SSH_KEY%%
-    dir %%SSH_KEY%%
-
-    scp -o StrictHostKeyChecking=no -i %%SSH_KEY%% docker-compose.yml ec2-user@${env.EC2_IP}:~/
-    ssh -o StrictHostKeyChecking=no -i %%SSH_KEY%% ec2-user@${env.EC2_IP} "docker-compose up -d"
-"""
+                            echo SSH key path is: %%SSH_KEY%%
+                            dir %%SSH_KEY%%
+                            scp -o StrictHostKeyChecking=no -i %%SSH_KEY%% docker-compose.yml ec2-user@${env.EC2_IP}:~/
+                            ssh -o StrictHostKeyChecking=no -i %%SSH_KEY%% ec2-user@${env.EC2_IP} "docker-compose up -d"
+                        """
                     }
                 }
             }
